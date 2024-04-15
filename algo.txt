@@ -1,0 +1,10 @@
+Algorithme de minimisation de Karnaugh:
+
+1. Définir la fonction logique à minimiser.
+2. Identifier les variables de la fonction logique.
+3. Construire la table de vérité correspondante.
+4. Grouper les termes de la table de vérité contenant des '1' adjacents dans le Karnaugh.
+5. Identifier les implicants premiers en combinant les groupes adjacents de '1'.
+6. Trouver la couverture minimale des implicants premiers.
+7. Construire l'expression minimale en combinant les implicants premiers sélectionnés.
+

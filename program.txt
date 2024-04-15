@@ -1,0 +1,57 @@
+from itertools import product
+
+def construire_table_de_verite(indices, variables):
+    table_verite = {}
+    for valeurs in product([0, 1], repeat=len(variables)):
+        index = sum(valeurs[i] << i for i in indices)
+        table_verite[valeurs] = 1 if index in indices else 0
+    return table_verite
+
+def karnaugh_minimisation(indices, variables):
+    table_verite = construire_table_de_verite(indices, variables)
+    minterms = {i for i, value in table_verite.items() if value == 1}
+    groupes = []
+    while minterms:
+        groupe = set()
+        a_eliminer = set()
+        for minterm in minterms:
+            voisins = {m for m in minterms if sum(abs(m[i] - n[i]) for i in range(len(variables))) == 1}
+            if len(voisins) == 1:
+                groupe.add(minterm)
+                a_eliminer |= voisins
+        groupes.append(groupe)
+        minterms -= groupe
+        minterms -= a_eliminer
+    return groupes
+
+def afficher_groupes(groupes):
+    print("Groupes de Karnaugh :")
+    for groupe in groupes:
+        print(groupe)
+
+def construire_expression_minimale(groupes, variables):
+    expressions = []
+    for groupe in groupes:
+        expression = []
+        for i, variable in enumerate(variables):
+            valeurs = {m[i] for m in groupe}
+            if 0 in valeurs and 1 in valeurs:
+                expression.append(variable)
+            elif 0 in valeurs:
+                expression.append(f"~{variable}")
+        expressions.append(" & ".join(expression))
+    return " | ".join(expressions)
+
+# Fonction logique à minimiser
+indices = {0, 2, 5, 7, 10, 14}
+variables = ['A', 'B', 'C', 'D']
+
+# Minimisation par la méthode de Karnaugh
+groupes = karnaugh_minimisation(indices, variables)
+
+# Affichage des groupes de Karnaugh
+afficher_groupes(groupes)
+
+# Construction de l'expression minimale
+expression_minimale = construire_expression_minimale(groupes, variables)
+print("\nExpression minimale obtenue avec la méthode de Karnaugh :", expression_minimale)
